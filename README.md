@@ -124,7 +124,7 @@ When you’re ready to go dynamic:
   }
   // loadCaregivers();
 </script>
-```bash 
+      ```
 
 - Consider adding search/filter inputs and wiring them to the API.
 ---
