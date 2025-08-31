@@ -123,9 +123,7 @@ When you’re ready to go dynamic:
     // render into a container with template literals
   }
   // loadCaregivers();
-</script>
-
-```
+</script>```
 
 - Consider adding search/filter inputs and wiring them to the API.
 ---
