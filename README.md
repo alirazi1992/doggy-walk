@@ -112,11 +112,11 @@ python -m http.server 8080
 
 When you’re ready to go dynamic:
 
-- Replace hardcoded caregiver cards with data fetched from an API.
-
+- Replace hardcoded caregiver cards with data fetched from an API.  
 - Add a simple script:
-  ```bash
-  <script>
+
+```html
+<script>
   async function loadCaregivers() {
     const res = await fetch('/api/caregivers'); // your endpoint
     const items = await res.json();
@@ -124,7 +124,6 @@ When you’re ready to go dynamic:
   }
   // loadCaregivers();
 </script>
-      ```
 
 - Consider adding search/filter inputs and wiring them to the API.
 ---
