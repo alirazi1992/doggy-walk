@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawfect Care | Pet Services & Walking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF9BD2',
+                        secondary: '#D63484',
+                        accent: '#F8F4EC',
+                        dark: '#402B3A',
+                        info: '#8BD8D2',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pet-paw-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4zm0 2c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4zm-6 6c0-2.2-1.8-4-4-4s-4 1.8-4 4 1.8 4 4 4 4-1.8 4-4zm14 0c0-2.2-1.8-4-4-4s-4 1.8-4 4 1.8 4 4 4 4-1.8 4-4z' fill='%23ff9bd2' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 120px;
+            height: 50px;
+        }
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #D63484;
+            transition: .4s;
+            border-radius: 50px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 42px;
+            width: 42px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #8BD8D2;
+        }
+        input:checked + .slider:before {
+            transform: translateX(70px);
+        }
+        .slider .text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .slider .on {
+            left: 15px;
+            display: none;
+        }
+        .slider .off {
+            right: 15px;
+        }
+        input:checked + .slider .on {
+            display: block;
+        }
+        input:checked + .slider .off {
+            display: none;
+        }
+        .verification-badge {
+            position: relative;
+        }
+        .verification-badge::after {
+            content: "✓";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .pet-type-selector input[type="radio"]:checked + label {
+            background-color: #D63484;
+            color: white;
+        }
+    </style>
+</head>
+<body class="pet-paw-bg min-h-screen">
+    <!-- Header -->
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-paw text-3xl"></i>
+                    <h1 class="text-2xl font-bold">Pawfect Care</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="hover:text-secondary font-medium">Home</a>
+                    <a href="#" class="hover:text-secondary font-medium">How It Works</a>
+                    <a href="#" class="hover:text-secondary font-medium">About Us</a>
+                    <a href="#" class="hover:text-secondary font-medium">Contact</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-white text-primary px-4 py-2 rounded-full font-bold hover:bg-secondary hover:text-white transition">Sign Up</button>
+                    <button class="hidden md:block bg-secondary text-white px-4 py-2 rounded-full font-bold hover:bg-white hover:text-primary transition">Login</button>
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Role Toggle -->
+        <div class="flex justify-center mb-12">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-dark mb-4">Find or Provide Pet Care</h2>
+                <div class="inline-block">
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="roleToggle">
+                        <span class="slider">
+                            <span class="text on">I'm a Caregiver</span>
+                            <span class="text off">I Need Care</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pet Owner Section (Default) -->
+        <section id="petOwnerSection">
+            <div class="max-w-4xl mx-auto bg-accent rounded-3xl p-8 shadow-lg">
+                <h2 class="text-2xl font-bold text-secondary mb-6">Find the perfect care for your pet</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Search Filters -->
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-dark font-medium mb-2">Pet Type</label>
+                            <div class="pet-type-selector grid grid-cols-3 gap-2">
+                                <input type="radio" name="petType" id="dog" class="hidden" checked>
+                                <label for="dog" class="bg-white py-2 px-4 rounded-full text-center cursor-pointer border border-primary">
+                                    <i class="fas fa-dog mr-2"></i> Dog
+                                </label>
+                                
+                                <input type="radio" name="petType" id="cat" class="hidden">
+                                <label for="cat" class="bg-white py-2 px-4 rounded-full text-center cursor-pointer border border-primary">
+                                    <i class="fas fa-cat mr-2"></i> Cat
+                                </label>
+                                
+                                <input type="radio" name="petType" id="other" class="hidden">
+                                <label for="other" class="bg-white py-2 px-4 rounded-full text-center cursor-pointer border border-primary">
+                                    <i class="fas fa-paw mr-2"></i> Other
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="careType" class="block text-dark font-medium mb-2">Type of Care Needed</label>
+                            <select id="careType" class="w-full p-3 rounded-xl border border-primary focus:outline-none focus:ring-2 focus:ring-secondary">
+                                <option value="">Select care type</option>
+                                <option value="walking">Dog Walking</option>
+                                <option value="daycare">Day Care</option>
+                                <option value="boarding">Overnight Boarding</option>
+                                <option value="visits">Home Visits</option>
+                                <option value="grooming">Grooming</option>
+                                <option value="training">Training</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="location" class="block text-dark font-medium mb-2">Location</label>
+                            <div class="relative">
+                                <input type="text" id="location" placeholder="Enter your address or zip code" class="w-full p-3 pl-10 rounded-xl border border-primary focus:outline-none focus:ring-2 focus:ring-secondary">
+                                <i class="fas fa-map-marker-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-primary"></i>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="dates" class="block text-dark font-medium mb-2">Dates Needed</label>
+                            <div class="relative">
+                                <input type="text" id="dates" placeholder="Select dates" class="w-full p-3 pl-10 rounded-xl border border-primary focus:outline-none focus:ring-2 focus:ring-secondary">
+                                <i class="fas fa-calendar-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-primary"></i>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-secondary text-white py-3 px-6 rounded-xl font-bold hover:bg-primary transition flex items-center justify-center">
+                            <i class="fas fa-search mr-2"></i> Find Caregivers
+                        </button>
+                    </div>
+                    
+                    <!-- Pet Info -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold text-dark mb-4">Tell us about your pet</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="petName" class="block text-dark font-medium mb-1">Pet's Name</label>
+                                <input type="text" id="petName" class="w-full p-2 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary">
+                            </div>
+                            
+                            <div>
+                                <label for="petAge" class="block text-dark font-medium mb-1">Age</label>
+                                <input type="number" id="petAge" class="w-full p-2 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary">
+                            </div>
+                            
+                            <div>
+                                <label for="petBreed" class="block text-dark font-medium mb-1">Breed</label>
+                                <input type="text" id="petBreed" class="w-full p-2 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary">
+                            </div>
+                            
+                            <div>
+                                <label for="petSize" class="block text-dark font-medium mb-1">Size</label>
+                                <select id="petSize" class="w-full p-2 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary">
+                                    <option value="">Select size</option>
+                                    <option value="small">Small (0-20 lbs)</option>
+                                    <option value="medium">Medium (21-50 lbs)</option>
+                                    <option value="large">Large (51-90 lbs)</option>
+                                    <option value="xlarge">Extra Large (90+ lbs)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="specialNeeds" class="block text-dark font-medium mb-1">Special Needs/Notes</label>
+                                <textarea id="specialNeeds" rows="3" class="w-full p-2 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Caregivers -->
+            <section class="mt-16">
+                <h2 class="text-2xl font-bold text-dark mb-8 text-center">Recommended Caregivers Near You</h2>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Caregiver Card 1 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden pet-card transition duration-300">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1554126807-6b10f6f6692a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Caregiver" class="w-full h-48 object-cover">
+                            <div class="absolute top-2 right-2 bg-white p-1 rounded-full verification-badge">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Profile" class="w-12 h-12 rounded-full border-2 border-white">
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-lg">Sarah Johnson</h3>
+                                    <p class="text-gray-600"><i class="fas fa-map-marker-alt text-primary mr-1"></i> 1.2 miles away</p>
+                                </div>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 font-bold">4.9</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium mr-1">Dog Walking</span>
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium mr-1">Day Care</span>
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium">Training</span>
+                            </div>
+                            <p class="mt-3 text-gray-700">Certified dog trainer with 5 years experience. Specializes in positive reinforcement methods.</p>
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-lg font-medium hover:bg-secondary transition">View Profile</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Caregiver Card 2 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden pet-card transition duration-300">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80" alt="Caregiver" class="w-full h-48 object-cover">
+                            <div class="absolute top-2 right-2 bg-white p-1 rounded-full verification-badge">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80" alt="Profile" class="w-12 h-12 rounded-full border-2 border-white">
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-lg">Michael Chen</h3>
+                                    <p class="text-gray-600"><i class="fas fa-map-marker-alt text-primary mr-1"></i> 0.8 miles away</p>
+                                </div>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 font-bold">5.0</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium mr-1">Cat Sitting</span>
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium">Home Visits</span>
+                            </div>
+                            <p class="mt-3 text-gray-700">Cat whisperer with veterinary assistant experience. Will send daily photos and updates!</p>
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-lg font-medium hover:bg-secondary transition">View Profile</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Caregiver Card 3 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden pet-card transition duration-300">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1586671267731-da2cf3ceeb80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1498&q=80" alt="Caregiver" class="w-full h-48 object-cover">
+                            <div class="absolute top-2 right-2 bg-white p-1 rounded-full verification-badge">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Profile" class="w-12 h-12 rounded-full border-2 border-white">
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-lg">Emily Rodriguez</h3>
+                                    <p class="text-gray-600"><i class="fas fa-map-marker-alt text-primary mr-1"></i> 2.1 miles away</p>
+                                </div>
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <span class="ml-1 font-bold">4.8</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium mr-1">Boarding</span>
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium mr-1">Grooming</span>
+                                <span class="inline-block bg-accent text-secondary px-2 py-1 rounded-full text-xs font-medium">Day Care</span>
+                            </div>
+                            <p class="mt-3 text-gray-700">Pet boarding in my home with large fenced yard. Small dogs only. 24/7 supervision.</p>
+                            <button class="mt-4 w-full bg-primary text-white py-2 rounded-lg font-medium hover:bg-secondary transition">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="bg-secondary text-white px-6 py-3 rounded-full font-bold hover:bg-primary transition">
+                        <i class="fas fa-paw mr-2"></i> See All Caregivers
+                    </button>
+                </div>
+            </section>
+        </section>
+        
+        <!-- Caregiver Section (Hidden by default) -->
+        <section id="caregiverSection" class="hidden">
+            <div class="max-w-4xl mx-auto bg-accent rounded-3xl p-8 shadow-lg">
+                <h2 class="text-2xl font-bold text-secondary mb-6">Become a Pawfect Caregiver</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Verification Process -->
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="text-lg font-bold text-dark mb-4">Verification Process</h3>
+                            <p class="text-gray-700 mb-4">Complete these steps to build trust with pet owners:</p>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mr-3">
+                                        <span>1</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Background Check</h4>
+                                        <p class="text-sm text-gray-600">We verify your identity and check for any criminal history</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mr-3">
+                                        <span>2</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Experience Verification</h4>
+                                        <p class="text-sm text-gray-600">Provide references or certifications to showcase your skills</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mr-3">
+                                        <span>3</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Video Interview</h4>
+                                        <p class="text-sm text-gray-600">Short video call with our team to assess your pet knowledge</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mr-3">
+                                        <span>4</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Test Walk/Visit</h4>
+                                        <p class="text-sm text-gray-600">Demonstrate your skills with one of our team's pets</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="text-lg font-bold text-dark mb-4">Document Upload</h3>
+                            <p class="text-gray-700 mb-4">Upload these documents to speed up verification:</p>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-id-card text-primary mr-3"></i>
+                                    <span>Government-issued ID</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-certificate text-primary mr-3"></i>
+                                    <span>Pet care certifications (if any)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-shield-alt text-primary mr-3"></i>
+                                    <span>Liability insurance (if available)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-user-tie text-primary mr-3"></i>
+                                    <span>Professional references</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 border-2 border-dashed border-primary rounded-xl p-4 text-center">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-primary mb-2"></i>
+                                <p class="text-sm text-gray-600">Drag and drop files here or click to browse</p>
+                                <button class="mt-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-secondary transition">Select Files</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Caregiver Profile -->
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="text-lg font-bold text-dark mb-4">Your Profile</h3>
+                            
+                            <div class="flex items-center mb-4">
+                                <div class="relative mr-4">
+                                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Profile" class="w-16 h-16 rounded-full object-cover">
+                                    <button class="absolute bottom-0 right-0 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center">
+                                        <i class="fas fa-pencil-alt text-xs"></i>
+                                    </button>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">Your Display Name</h4>
+                                    <p class="text-sm text-gray-600">This is how you'll appear to pet owners</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="bio" class="block text-dark font-medium mb-1">About You</label>
+                                    <textarea id="bio" rows="3" class="w-full p-2 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Tell pet owners about yourself and your experience with pets"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-dark font-medium mb-2">Services Offered</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="walking" class="mr-2">
+                                            <label for="walking">Dog Walking</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="daycare" class="mr-2">
+                                            <label for="daycare">Day Care</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="boarding" class="mr-2">
+                                            <label for="boarding">Overnight Boarding</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="visits" class="mr-2">
+                                            <label for="visits">Home Visits</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="grooming" class="mr-2">
+                                            <label for="grooming">Grooming</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="training" class="mr-2">
+                                            <label for="training">Training</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="rates" class="block text-dark font-medium mb-1">Your Rates</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="walkingRate" class="block text-sm text-gray-600 mb-1">Walking (per 30min)</label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2">$</span>
+                                                <input type="number" id="walkingRate" class="w-full p-2 pl-8 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="daycareRate" class="block text-sm text-gray-600 mb-1">Day Care (per day)</label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2">$</span>
+                                                <input type="number" id="daycareRate" class="w-full p-2 pl-8 rounded-lg border border-primary focus:outline-none focus:ring-1 focus:ring-secondary">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="availability" class="block text-dark font-medium mb-1">Availability</label>
+                                    <div class="grid grid-cols-7 gap-1">
+                                        <div class="text-center text-xs font-medium">S</div>
+                                        <div class="text-center text-xs font-medium">M</div>
+                                        <div class="text-center text-xs font-medium">T</div>
+                                        <div class="text-center text-xs font-medium">W</div>
+                                        <div class="text-center text-xs font-medium">T</div>
+                                        <div class="text-center text-xs font-medium">F</div>
+                                        <div class="text-center text-xs font-medium">S</div>
+                                        
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="sun" class="hidden">
+                                            <label for="sun" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white">S</label>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="mon" class="hidden" checked>
+                                            <label for="mon" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer bg-primary text-white">M</label>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="tue" class="hidden" checked>
+                                            <label for="tue" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer bg-primary text-white">T</label>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="wed" class="hidden" checked>
+                                            <label for="wed" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer bg-primary text-white">W</label>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="thu" class="hidden" checked>
+                                            <label for="thu" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer bg-primary text-white">T</label>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="fri" class="hidden" checked>
+                                            <label for="fri" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer bg-primary text-white">F</label>
+                                        </div>
+                                        <div class="flex justify-center">
+                                            <input type="checkbox" id="sat" class="hidden">
+                                            <label for="sat" class="w-8 h-8 rounded-full border border-primary flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white">S</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="serviceArea" class="block text-dark font-medium mb-1">Service Area (miles)</label>
+                                    <input type="range" id="serviceArea" min="1" max="20" value="5" class="w-full">
+                                    <div class="flex justify-between text-xs text-gray-600">
+                                        <span>1 mile</span>
+                                        <span>5 miles</span>
+                                        <span>20+ miles</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-secondary text-white py-3 px-6 rounded-xl font-bold hover:bg-primary transition flex items-center justify-center">
+                            <i class="fas fa-paw mr-2"></i> Complete Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Why Become a Caregiver -->
+            <section class="mt-16">
+                <h2 class="text-2xl font-bold text-dark mb-8 text-center">Why Join Pawfect Care?</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                        <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-money-bill-wave text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Earn Money</h3>
+                        <p class="text-gray-700">Set your own rates and keep up to 90% of what you earn. Get paid weekly.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                        <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-calendar-alt text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Flexible Schedule</h3>
+                        <p class="text-gray-700">Work when you want. Accept jobs that fit your availability.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                        <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-heart text-2xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Do What You Love</h3>
+                        <p class="text-gray-700">Spend time with pets while making a difference in their lives.</p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="bg-secondary text-white px-6 py-3 rounded-full font-bold hover:bg-primary transition">
+                        <i class="fas fa-play-circle mr-2"></i> Watch Caregiver Success Stories
+                    </button>
+                </div>
+            </section>
+        </section>
+    </main>
+    
+    <!-- Testimonials -->
+    <section class="bg-primary text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8 text-center">What Our Users Say</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white text-dark p-6 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80" alt="User" class="w-12 h-12 rounded-full object-cover mr-3">
+                        <div>
+                            <h4 class="font-bold">Jessica T.</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"I was nervous about leaving my dog with a stranger, but the verification process gave me peace of mind. Sarah sends me updates and photos every walk!"</p>
+                </div>
+                
+                <div class="bg-white text-dark p-6 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="User" class="w-12 h-12 rounded-full object-cover mr-3">
+                        <div>
+                            <h4 class="font-bold">Mark R.</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"As a caregiver, I love setting my own schedule. The app makes it easy to connect with pet owners who need my specific skills."</p>
+                </div>
+                
+                <div class="bg-white text-dark p-6 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80" alt="User" class="w-12 h-12 rounded-full object-cover mr-3">
+                        <div>
+                            <h4 class="font-bold">Lisa M.</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"Finding care for my three cats was impossible before Pawfect Care. Now I have several trusted sitters to choose from when I travel."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ -->
+    <section class="container mx-auto px-4 py-16">
+        <h2 class="text-2xl font-bold text-dark mb-8 text-center">Frequently Asked Questions</h2>
+        
+        <div class="max-w-3xl mx-auto space-y-4">
+            <div class="border border-primary rounded-xl overflow-hidden">
+                <button class="w-full text-left p-4 bg-accent font-medium flex justify-between items-center">
+                    <span>How does the verification process work for caregivers?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="p-4 bg-white hidden">
+                    <p class="text-gray-700">Our 4-step verification includes identity confirmation, background check, skills assessment, and reference checks. This rigorous process typically takes 3-5 business days and helps ensure pet owners can trust our caregivers.</p>
+                </div>
+            </div>
+            
+            <div class="border border-primary rounded-xl overflow-hidden">
+                <button class="w-full text-left p-4 bg-accent font-medium flex justify-between items-center">
+                    <span>What if my pet has special needs?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="p-4 bg-white hidden">
+                    <p class="text-gray-700">You can specify any special needs in your pet's profile and when requesting services. Our matching system will prioritize caregivers with relevant experience, whether it's medication administration, senior pet care, or behavioral issues.</p>
+                </div>
+            </div>
+            
+            <div class="border border-primary rounded-xl overflow-hidden">
+                <button class="w-full text-left p-4 bg-accent font-medium flex justify-between items-center">
+                    <span>How are payments handled?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="p-4 bg-white hidden">
+                    <p class="text-gray-700">Pet owners pay through our secure platform. Caregivers receive payments weekly via direct deposit. We hold payments until the service is completed to ensure satisfaction. Our service fee is 10% for caregivers (you keep 90%).</p>
+                </div>
+            </div>
+            
+            <div class="border border-primary rounded-xl overflow-hidden">
+                <button class="w-full text-left p-4 bg-accent font-medium flex justify-between items-center">
+                    <span>What safety measures are in place?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="p-4 bg-white hidden">
+                    <p class="text-gray-700">All caregivers undergo background checks. Services include GPS-tracked walks, photo updates, and secure messaging. We also offer premium insurance options and 24/7 support for emergencies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="bg-secondary text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Join thousands of pet lovers who trust Pawfect Care for their pet care needs.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="bg-white text-secondary px-8 py-3 rounded-full font-bold hover:bg-primary hover:text-white transition">
+                    <i class="fas fa-search mr-2"></i> Find a Caregiver
+                </button>
+                <button class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-secondary transition">
+                    <i class="fas fa-paw mr-2"></i> Become a Caregiver
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-paw text-2xl text-primary"></i>
+                        <h3 class="text-xl font-bold">Pawfect Care</h3>
+                    </div>
+                    <p class="text-gray-300">Connecting pet owners with trusted caregivers since 2023.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-300 hover:text-primary text-xl"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-primary text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-primary text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-primary text-xl"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">For Pet Owners</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-primary">How It Works</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Find Caregivers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Pricing</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Safety</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Reviews</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">For Caregivers</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Become a Caregiver</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Requirements</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Earnings</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Resources</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Caregiver Stories</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-primary">About Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Careers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Press</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Blog</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Pawfect Care. All rights reserved. | <a href="#" class="hover:text-primary">Privacy Policy</a> | <a href="#" class="hover:text-primary">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Toggle between pet owner and caregiver sections
+        const roleToggle = document.getElementById('roleToggle');
+        const petOwnerSection = document.getElementById('petOwnerSection');
+        const caregiverSection = document.getElementById('caregiverSection');
+        
+        roleToggle.addEventListener('change', function() {
+            if(this.checked) {
+                petOwnerSection.classList.add('hidden');
+                caregiverSection.classList.remove('hidden');
+            } else {
+                petOwnerSection.classList.remove('hidden');
+                caregiverSection.classList.add('hidden');
+            }
+        });
+        
+        // FAQ accordion functionality
+        const faqButtons = document.querySelectorAll('.border-primary button');
+        faqButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                content.classList.toggle('hidden');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        });
+        
+        // Pet type selector
+        const petTypeRadios = document.querySelectorAll('.pet-type-selector input[type="radio"]');
+        petTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const allLabels = document.querySelectorAll('.pet-type-selector label');
+                allLabels.forEach(label => {
+                    label.classList.remove('bg-primary', 'text-white');
+                    label.classList.add('bg-white');
+                });
+                
+                if(this.checked) {
+                    const label = document.querySelector(`.pet-type-selector label[for="${this.id}"]`);
+                    label.classList.add('bg-primary', 'text-white');
+                    label.classList.remove('bg-white');
+                }
+            });
+        });
+        
+        // Availability selector
+        const availabilityCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="sun"], input[type="checkbox"][id^="mon"], input[type="checkbox"][id^="tue"], input[type="checkbox"][id^="wed"], input[type="checkbox"][id^="thu"], input[type="checkbox"][id^="fri"], input[type="checkbox"][id^="sat"]');
+        availabilityCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = document.querySelector(`label[for="${this.id}"]`);
+                if(this.checked) {
+                    label.classList.add('bg-primary', 'text-white');
+                } else {
+                    label.classList.remove('bg-primary', 'text-white');
+                }
+            });
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=alirazi9292/doggy-walk" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
