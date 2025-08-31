@@ -115,7 +115,8 @@ When you’re ready to go dynamic:
 - Replace hardcoded caregiver cards with data fetched from an API.  
 - Add a simple script:
 
-```html
+```bash
+html
 <script>
   async function loadCaregivers() {
     const res = await fetch('/api/caregivers'); // your endpoint
@@ -123,7 +124,8 @@ When you’re ready to go dynamic:
     // render into a container with template literals
   }
   // loadCaregivers();
-</script> ```
+</script>
+```
 
 - Consider adding search/filter inputs and wiring them to the API.
 ---
